@@ -1,0 +1,91 @@
+import naves.*
+
+describe "test sobre naves" {
+	
+	var naveBaliza = new NaveBaliza(colorBaliza = "rojo")
+	var naveCombate = new NaveCombate()
+	var navePasajeros = new NaveDePasajeros()
+	
+	fixture {
+		navePasajeros.cantidadDePasajeros(100)
+		
+	}
+	
+	
+	test "naveVelocidadMaxima" {
+		naveBaliza.acelerar(110000)
+		assert.equals(100000, naveBaliza.velocidad())
+	}
+	
+	test "naveVelocidadMinima" {
+		naveBaliza.desacelerar(110000)
+		assert.equals(0, naveBaliza.velocidad())
+	}		
+	
+	test "naveBalizaCambioDeColor" {
+		assert.equals("rojo",naveBaliza.colorBaliza())	
+	}
+	
+	test "naveEscaparDelSol" {
+		naveBaliza.escaparDelSol()
+		assert.equals(-10, naveBaliza.direccion())
+	}
+	
+	test "naveAcercarseUnPocoAlSolMaximo" {
+		var nave = new NaveBaliza(direccion = 10, colorBaliza = "verde")
+		nave.acercarseUnPocoAlSol()	
+		assert.equals(10, nave.direccion())
+	}
+	
+	test "naveAcercarseUnPocoAlSolMinimo" {
+		var nave = new NaveBaliza(direccion = -10, colorBaliza = "verde")
+		nave.alejarseUnPocoDelSol()	
+		assert.equals(-10, nave.direccion())
+	}
+	
+	test "naveAcercarseUnPocoAlSol" {
+		naveBaliza.acercarseUnPocoAlSol()
+		assert.equals(1, naveBaliza.direccion())
+	}
+	
+	test "naveBalizaCambiarColor" {
+		naveBaliza.cambiarColorDeBaliza("azul")
+		assert.equals("azul", naveBaliza.colorBaliza())
+	}
+	
+	test "naveBalizaCambiarColorInvalido" {
+		naveBaliza.cambiarColorDeBaliza("violeta")
+		assert.equals("rojo", naveBaliza.colorBaliza())
+	}
+	
+	test "naveCombatePrepararViaje" {
+		naveCombate.recibirAmenaza()
+		
+		assert.notThat(naveCombate.estaInvisible())
+		assert.notThat(naveCombate.misilesDesplegados())
+		assert.equals("Saliendo en misión", naveCombate.ultimoMensajeEmitido())
+		assert.equals(30000, naveCombate.combustible())
+		assert.equals(20000, naveCombate.velocidad())
+	}
+	
+	test "naveBalizaPrepararViaje" {
+		naveBaliza.prepararViaje()
+		
+		assert.equals("verde", naveBaliza.colorBaliza())
+		assert.equals(0, naveBaliza.direccion())
+		assert.equals(30000, naveBaliza.combustible())
+		assert.equals(5000, naveBaliza.velocidad())
+		
+	}
+	
+	test "navePasajerosPrepararViaje" {
+		navePasajeros.prepararViaje()
+		
+		assert.equals(600, navePasajeros.racionesDeBebida())
+		assert.equals(400, navePasajeros.racionesDeComida())
+		assert.equals(1, navePasajeros.direccion())
+		assert.equals(30000, navePasajeros.combustible())
+		assert.equals(5000, navePasajeros.velocidad())
+	}
+		
+}

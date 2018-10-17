@@ -1,9 +1,17 @@
 class Nave {
 	var velocidad = 0
 	var direccion = 0
+	var combustible = 0
 	
-	method velocidad(_velocidad) {
-		velocidad=_velocidad
+	method combustible() {
+		return combustible
+	}
+	
+	method cargarCombustible(cantidad) {
+		combustible += cantidad
+	}
+	method descargarCombustible(cantidad) {
+		combustible -= cantidad
 	}
 	method direccion(_direccion) {
 		direccion=_direccion
@@ -16,11 +24,11 @@ class Nave {
 	}	
 	method acelerar(cuanto) {
 		velocidad+=cuanto
-		velocidad = velocidad.max(100000)
+		velocidad = velocidad.min(100000)
 	}
 	method desacelerar(cuanto) {
 		velocidad-=cuanto
-		velocidad = velocidad.min(0)
+		velocidad = velocidad.max(0)
 	}
 	method irHaciaElSol() {
 		direccion = 10		
@@ -31,30 +39,55 @@ class Nave {
 	method ponerseParaleloAlSol() {
 		direccion = 0				
 	}
-	method acercaseUnPocoAlSol() {
+	method acercarseUnPocoAlSol() {
 		direccion += 1
-		direccion = direccion.max(10)	
+		direccion = direccion.min(10)	
 	}
 	method alejarseUnPocoDelSol() {
 		direccion -= 1
 		direccion = direccion.max(-10)		
 	}
 	
-	method prepararViaje()
+	method prepararViaje() {
+		self.cargarCombustible(30000)
+		self.acelerar(5000)
+	}
+	
+	method recibirAmenaza() {
+		self.escapar()
+		self.avisar()
+	}
+	
+	method escapar()
+	method avisar()
 }
 
 class NaveBaliza inherits Nave {
 	var colorBaliza
+	var coloresValidados = #{"rojo", "verde", "azul"}
 
-	method colorBaliza(_colorBaliza) {
-		colorBaliza = _colorBaliza
+	method cambiarColorDeBaliza(_colorBaliza) {
+		/*if (coloresValidados.any({c => c == _colorBaliza})) {
+					colorBaliza = _colorBaliza						
+		}*/
+		if (coloresValidados.contains(_colorBaliza)) {
+					colorBaliza = _colorBaliza						
+		}		
 	}
 	method colorBaliza() {
 		return colorBaliza
 	}
 	override method prepararViaje() {
-		self.colorBaliza("verde")
+		super()
+		self.cambiarColorDeBaliza("verde")
 		self.ponerseParaleloAlSol()
+	}
+	override method escapar() {
+		
+	}
+	
+	override method avisar() {
+		
 	}
 }
 
@@ -94,24 +127,42 @@ class NaveCombate inherits Nave {
 		return mensajesEmitidos.last()	
 	}
 	method esEscueta() {
-		return mensajesEmitidos.any({m => m.size() > 30})	
+		//return mensajesEmitidos.all({m => m.lenght() <= 30})
+		return not mensajesEmitidos.any({m => m.lenght() > 30})	
 	}
 	method emitioMensaje(mensaje) {
 		return mensajesEmitidos.contains(mensaje)	
 	}
 	override method prepararViaje() {
+		super()
 		self.ponerseVisible()
 		self.replegarMisiles()
 		self.acelerar(15000)	
 		self.emitirMensaje("Saliendo en misión")
 	}
+	
+	override method escapar() {
+		
+	}
+	
+	override method avisar() {
+		
+	}
 		
 }
 
 class NaveDePasajeros inherits Nave {
-	var cantidadDePasajeros
-	var racionesDeComida
-	var racionesDeBebida
+	var cantidadDePasajeros = 0
+	var racionesDeComida = 0
+	var racionesDeBebida = 0
+	
+	method racionesDeComida() {
+		return racionesDeComida	
+	}
+	
+	method racionesDeBebida() {
+		return racionesDeBebida	
+	}
 	
 	method cantidadDePasajeros(_cantidadDePasajeros) {
 		cantidadDePasajeros = _cantidadDePasajeros
@@ -132,8 +183,17 @@ class NaveDePasajeros inherits Nave {
 		racionesDeBebida-=cantidad
 	}
 	override method prepararViaje() {
+		super()
 		self.cargarRacionesDeComida(4*cantidadDePasajeros)
 		self.cargarRacionesDeBebida(6*cantidadDePasajeros)
-		self.acercaseUnPocoAlSol()	
-	}	
+		self.acercarseUnPocoAlSol()	
+	}
+	
+		override method escapar() {
+			
+		}
+		
+		override method avisar() {
+			
+		}
 }
